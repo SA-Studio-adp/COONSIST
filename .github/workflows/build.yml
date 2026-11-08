@@ -16,17 +16,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
 
-      # The repo has gradle-wrapper.properties but no gradlew / wrapper jar,
-      # so install the exact Gradle version the project asks for (9.3.1).
+      # The repo has no gradlew / wrapper jar. Use the Gradle already installed on the
+      # runner (no download, so Gradle's servers returning 504 can't break the build).
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 9.3.1
+
+      - name: Show Gradle version
+        run: gradle --version
 
       # app/build.gradle.kts points the debug build at ${rootDir}/debug.keystore,
       # which is not in the repo. Create it so the build doesn't fail.
